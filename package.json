@@ -1,0 +1,24 @@
+{
+  "name": "safe-pptx",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Safe-DOCX-style MCP server for surgical, format-preserving .pptx editing",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @safe-pptx/pptx-core && npm run build -w @safe-pptx/pptx-mcp",
+    "fixture": "node scripts/make-fixture.mjs",
+    "smoke": "npm run build && node scripts/smoke.mjs",
+    "test": "npm run test -w @safe-pptx/pptx-core && npm run test -w @safe-pptx/pptx-mcp"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@safe-pptx/pptx-mcp",
+  "version": "0.1.0",
+  "description": "MCP server exposing safe-pptx surgical PowerPoint editing tools",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/server.js",
+  "bin": {
+    "safe-pptx": "dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test dist/**/*.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@safe-pptx/pptx-core": "*",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}
