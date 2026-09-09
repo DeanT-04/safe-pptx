@@ -5,3 +5,8 @@ export * from './zip/pptx_zip.js';
 export * from './package/content_types.js';
 export * from './package/rels.js';
 export * from './package/presentation.js';
+export * from './package/shapes.js';
+export * from './text/model.js';
+export * from './text/anchors.js';
+export * from './read/walk.js';
+export * from './read/comments.js';

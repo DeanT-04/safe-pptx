@@ -16,7 +16,7 @@ Repo: https://github.com/DeanT-04/safe-pptx
 | Phase | Scope | Status |
 |---|---|---|
 | 1 | Repo scaffold, monorepo, PptxZip loader, guards, session manager, MCP skeleton | ✅ done |
-| 2 | Read path: anchors, read_file, get_outline, grep, export, get_comments | ⬜ |
+| 2 | Read path: anchors, read_file, get_outline, grep, export, get_comments | ✅ done |
 | 3 | Edit core: run-splitting text engine, replace_text, insert_paragraph, batch_edit, set_font, minimal-restore save, audit log | ⬜ |
 | 4 | Structure: edit_notes, edit_table_cell, comment writes, slide add/duplicate/reorder/delete | ⬜ |
 | 5 | compare_decks report + annotated copy | ⬜ |

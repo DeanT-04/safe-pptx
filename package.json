@@ -15,6 +15,7 @@
     "build": "npm run build -w @safe-pptx/pptx-core && npm run build -w @safe-pptx/pptx-mcp",
     "fixture": "node scripts/make-fixture.mjs",
     "smoke": "npm run build && node scripts/smoke.mjs",
+    "smoke:read": "npm run build && node scripts/smoke-read.mjs",
     "test": "npm run test -w @safe-pptx/pptx-core && npm run test -w @safe-pptx/pptx-mcp"
   },
   "devDependencies": {
