@@ -35,6 +35,8 @@ const contentTypes = `${xmlDecl}<Types xmlns="${NS.ct}">
 <Override PartName="/ppt/slides/slide2.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>
 <Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>
 <Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>
+<Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>
+<Override PartName="/ppt/notesSlides/notesSlide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>
 <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>
 <Override PartName="/ppt/presProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>
 <Override PartName="/ppt/viewProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"/>
@@ -53,6 +55,7 @@ const rootRels = `${xmlDecl}<Relationships xmlns="${NS.rel}">
 
 const presentation = `${xmlDecl}<p:presentation xmlns:a="${NS.a}" xmlns:r="${NS.r}" xmlns:p="${NS.p}">
 <p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>
+<p:notesMasterIdLst><p:notesMasterId id="2147483664" r:id="rId7"/></p:notesMasterIdLst>
 <p:sldIdLst><p:sldId id="256" r:id="rId2"/><p:sldId id="257" r:id="rId3"/></p:sldIdLst>
 <p:sldSz cx="12192000" cy="6858000"/>
 <p:notesSz cx="6858000" cy="9144000"/>
@@ -71,6 +74,7 @@ const presentationRels = `${xmlDecl}<Relationships xmlns="${NS.rel}">
 <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>
 <Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>
 <Relationship Id="rId6" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>
+<Relationship Id="rId7" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="notesMasters/notesMaster1.xml"/>
 </Relationships>
 `;
 
@@ -134,8 +138,57 @@ ${spTreeOpen()}
 </p:sld>
 `;
 
-const slideRels = (layout) => `${xmlDecl}<Relationships xmlns="${NS.rel}">
-<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="${layout}"/>
+const slideRels = (layout, extra = '') => `${xmlDecl}<Relationships xmlns="${NS.rel}">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="${layout}"/>${extra}
+</Relationships>
+`;
+
+const notesMasterId = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster';
+const notesSlideRel = `<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide" Target="../notesSlides/notesSlide1.xml"/>`;
+
+const notesMaster = `${xmlDecl}<p:notesMaster xmlns:a="${NS.a}" xmlns:r="${NS.r}" xmlns:p="${NS.p}">
+<p:cSld><p:spTree>
+${spTreeOpen()}
+<p:sp>
+<p:nvSpPr><p:cNvPr id="2" name="Slide Image Placeholder 1"/><p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/></p:cNvSpPr><p:nvPr><p:ph type="sldImg"/></p:nvPr></p:nvSpPr>
+<p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
+</p:sp>
+<p:sp>
+<p:nvSpPr><p:cNvPr id="3" name="Notes Placeholder 2"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr>
+<p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
+</p:sp>
+</p:spTree></p:cSld>
+<p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>
+<p:notesStyle><a:lvl1pPr><a:defRPr sz="1200"/></a:lvl1pPr></p:notesStyle>
+</p:notesMaster>
+`;
+
+const notesMasterRels = `${xmlDecl}<Relationships xmlns="${NS.rel}">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>
+</Relationships>
+`;
+
+const notesSlide = `${xmlDecl}<p:notes xmlns:a="${NS.a}" xmlns:r="${NS.r}" xmlns:p="${NS.p}">
+<p:cSld><p:spTree>
+${spTreeOpen()}
+<p:sp>
+<p:nvSpPr><p:cNvPr id="2" name="Slide Image Placeholder 1"/><p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/></p:cNvSpPr><p:nvPr><p:ph type="sldImg"/></p:nvPr></p:nvSpPr>
+<p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>
+</p:sp>
+<p:sp>
+<p:nvSpPr><p:cNvPr id="3" name="Notes Placeholder 2"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr>
+<p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/>
+<a:p><a:r><a:rPr lang="en-US"/><a:t>Emphasize the EMEA beat and the pipeline ramp.</a:t></a:r></a:p>
+</p:txBody>
+</p:sp>
+</p:spTree></p:cSld>
+<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>
+</p:notes>
+`;
+
+const notesSlideRels = `${xmlDecl}<Relationships xmlns="${NS.rel}">
+<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../slides/slide2.xml"/>
+<Relationship Id="rId2" Type="${notesMasterId}" Target="../notesMasters/notesMaster1.xml"/>
 </Relationships>
 `;
 
@@ -277,7 +330,11 @@ zip.file('ppt/_rels/presentation.xml.rels', presentationRels);
 zip.file('ppt/slides/slide1.xml', slide1);
 zip.file('ppt/slides/_rels/slide1.xml.rels', slideRels('../slideLayouts/slideLayout1.xml'));
 zip.file('ppt/slides/slide2.xml', slide2);
-zip.file('ppt/slides/_rels/slide2.xml.rels', slideRels('../slideLayouts/slideLayout1.xml'));
+zip.file('ppt/slides/_rels/slide2.xml.rels', slideRels('../slideLayouts/slideLayout1.xml', notesSlideRel));
+zip.file('ppt/notesMasters/notesMaster1.xml', notesMaster);
+zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', notesMasterRels);
+zip.file('ppt/notesSlides/notesSlide1.xml', notesSlide);
+zip.file('ppt/notesSlides/_rels/notesSlide1.xml.rels', notesSlideRels);
 zip.file('ppt/slideLayouts/slideLayout1.xml', slideLayout);
 zip.file('ppt/slideLayouts/_rels/slideLayout1.xml.rels', slideLayoutRels);
 zip.file('ppt/slideMasters/slideMaster1.xml', slideMaster);

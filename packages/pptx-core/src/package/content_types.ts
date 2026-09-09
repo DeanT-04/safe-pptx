@@ -1,20 +1,22 @@
-import { childrenByName } from '../xml/parse.js';
-import type { Document } from '../xml/parse.js';
+import { childrenByName, makeElement } from '../xml/parse.js';
+import type { Document, Element } from '../xml/parse.js';
 
 /**
  * `[Content_Types].xml` model. Every part in an OPC package must be covered by
  * either a `<Default>` (by extension) or an `<Override>` (by part name);
  * missing coverage makes PowerPoint show a repair prompt.
+ * setOverride/removeOverride mutate the live DOM as well as the model, so the
+ * caller only needs to markDirty the content-types part.
  */
 export class ContentTypes {
   private readonly defaults = new Map<string, string>();
   private readonly overrides = new Map<string, string>();
 
-  private constructor() {}
+  private constructor(private readonly doc: Document) {}
 
   static parse(doc: Document): ContentTypes {
     const root = doc.documentElement;
-    const out = new ContentTypes();
+    const out = new ContentTypes(doc);
     for (const el of childrenByName(root, 'ct', 'Default')) {
       const ext = el.getAttribute('Extension');
       const ct = el.getAttribute('ContentType');
@@ -26,6 +28,10 @@ export class ContentTypes {
       if (name && ct) out.overrides.set(name.replace(/^\//, ''), ct);
     }
     return out;
+  }
+
+  private root(): Element | null {
+    return this.doc.documentElement;
   }
 
   extensionOf(partPath: string): string {
@@ -52,10 +58,29 @@ export class ContentTypes {
 
   setOverride(partPath: string, contentType: string): void {
     this.overrides.set(partPath, contentType);
+    const root = this.root();
+    if (!root) return;
+    const existing = childrenByName(root, 'ct', 'Override').find(
+      (el) => (el.getAttribute('PartName') ?? '').replace(/^\//, '') === partPath,
+    );
+    if (existing) {
+      existing.setAttribute('ContentType', contentType);
+    } else {
+      const el = makeElement(this.doc, 'ct', 'Override');
+      el.setAttribute('PartName', `/${partPath}`);
+      el.setAttribute('ContentType', contentType);
+      root.appendChild(el);
+    }
   }
 
   removeOverride(partPath: string): void {
     this.overrides.delete(partPath);
+    const root = this.root();
+    if (!root) return;
+    const existing = childrenByName(root, 'ct', 'Override').find(
+      (el) => (el.getAttribute('PartName') ?? '').replace(/^\//, '') === partPath,
+    );
+    if (existing) root.removeChild(existing);
   }
 
   allOverrides(): Map<string, string> {

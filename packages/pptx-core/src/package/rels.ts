@@ -1,5 +1,5 @@
-import { childrenByName } from '../xml/parse.js';
-import type { Document } from '../xml/parse.js';
+import { childrenByName, makeElement } from '../xml/parse.js';
+import type { Document, Element } from '../xml/parse.js';
 
 export interface Rel {
   id: string;
@@ -93,4 +93,45 @@ export class RelResolver {
   invalidateAll(): void {
     this.cache.clear();
   }
+}
+
+/** Next free relationship id in a rels document: rId<N> with N = max existing + 1. */
+export function nextFreeRelId(doc: Document): string {
+  let max = 0;
+  for (const el of childrenByName(doc.documentElement, 'rel', 'Relationship')) {
+    const m = (el.getAttribute('Id') ?? '').match(/^rId(\d+)$/);
+    if (m) max = Math.max(max, Number(m[1]));
+  }
+  return `rId${max + 1}`;
+}
+
+/** Append a relationship to a rels document. Returns the new id when `rel.id` is empty. */
+export function addRelToDoc(
+  doc: Document,
+  rel: { id?: string; type: string; target: string; targetMode?: 'Internal' | 'External' },
+): string {
+  const root = doc.documentElement;
+  const id = rel.id || nextFreeRelId(doc);
+  const el = makeElement(doc, 'rel', 'Relationship');
+  el.setAttribute('Id', id);
+  el.setAttribute('Type', rel.type);
+  el.setAttribute('Target', rel.target);
+  if (rel.targetMode && rel.targetMode !== 'Internal') el.setAttribute('TargetMode', rel.targetMode);
+  root?.appendChild(el);
+  return id;
+}
+
+/** Remove the relationship with `id` from a rels document. Returns true when removed. */
+export function removeRelFromDoc(doc: Document, id: string): boolean {
+  const root = doc.documentElement;
+  if (!root) return false;
+  const el = childrenByName(root, 'rel', 'Relationship').find((r) => r.getAttribute('Id') === id);
+  if (!el) return false;
+  root.removeChild(el);
+  return true;
+}
+
+/** All relationships of a rels document as elements (for slide-delete sweeps). */
+export function relElsOf(doc: Document): Element[] {
+  return childrenByName(doc.documentElement, 'rel', 'Relationship');
 }

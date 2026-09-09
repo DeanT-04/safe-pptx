@@ -37,16 +37,33 @@ export interface DeckComments {
 }
 
 function parseAuthors(pkg: PptxPackage): { id: string; name: string; initials?: string }[] {
-  const authorsPart = 'ppt/commentAuthors.xml';
-  if (!pkg.zip.hasPart(authorsPart)) return [];
-  const doc = pkg.zip.doc(authorsPart);
-  const list = firstDescendantByName(doc, 'p', 'cmAuthorLst');
-  if (!list) return [];
-  return childrenByName(list, 'p', 'cmAuthor').map((el) => ({
-    id: el.getAttribute('id') ?? '',
-    name: el.getAttribute('name') ?? '',
-    initials: el.getAttribute('initials') ?? undefined,
-  }));
+  const out: { id: string; name: string; initials?: string }[] = [];
+  const legacyPart = 'ppt/commentAuthors.xml';
+  if (pkg.zip.hasPart(legacyPart)) {
+    const doc = pkg.zip.doc(legacyPart);
+    const list = firstDescendantByName(doc, 'p', 'cmAuthorLst');
+    for (const el of list ? childrenByName(list, 'p', 'cmAuthor') : []) {
+      out.push({
+        id: el.getAttribute('id') ?? '',
+        name: el.getAttribute('name') ?? '',
+        initials: el.getAttribute('initials') ?? undefined,
+      });
+    }
+  }
+  // Modern threaded-comment authors (p18).
+  const modernPart = 'ppt/threadedComments/threadedCommentAuthors.xml';
+  if (pkg.zip.hasPart(modernPart)) {
+    const doc = pkg.zip.doc(modernPart);
+    const list = firstDescendantByName(doc, 'p18', 'threadedCommentAuthors');
+    for (const el of list ? childrenByName(list, 'p18', 'threadedCommentAuthor') : []) {
+      out.push({
+        id: el.getAttribute('id') ?? '',
+        name: el.getAttribute('name') ?? '',
+        initials: el.getAttribute('initials') ?? undefined,
+      });
+    }
+  }
+  return out;
 }
 
 function posOf(cm: Element): { x: number; y: number } | undefined {

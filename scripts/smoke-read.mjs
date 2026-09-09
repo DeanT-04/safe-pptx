@@ -66,7 +66,7 @@ check('grep finds formatted run text', grep.hits?.length === 1 && grep.hits[0].a
 const grepXml = await tool('grep').handler(ctx, { file_path: fixturePath, pattern: 'sldSz', search_xml: true });
 check('grep xml mode finds presentation.xml', grepXml.hits?.some((h) => h.part === 'ppt/presentation.xml'));
 const grepMulti = await tool('grep').handler(ctx, { file_paths: [fixturePath, fixturePath], pattern: 'EMEA' });
-check('grep multi-file stateless', grepMulti.files_searched === 2 && grepMulti.hits.length === 2);
+check('grep multi-file stateless', grepMulti.files_searched === 2 && grepMulti.hits.length === 4, `${grepMulti.hits?.length} hits (slide2 body + notes, x2 files)`);
 
 // get_comments (fixture has none — should be empty, not error)
 const comments = await tool('get_comments').handler(ctx, { file_path: fixturePath });
