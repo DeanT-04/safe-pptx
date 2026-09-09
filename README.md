@@ -43,7 +43,9 @@ npm run fixture      # regenerate the deterministic test fixture
 npm run verify       # build + unit tests + all 7 integration suites
 ```
 
-Integration suites: `smoke` (loader), `smoke:read`, `smoke:edit`, `smoke:structure`, `smoke:compare`, `smoke:stdio` (spawns the real MCP server and speaks JSON-RPC), `smoke:real` (validates against a genuine PowerPoint deck — untouched parts must be byte-identical after edit+save).
+Integration suites: `smoke` (loader), `smoke:read`, `smoke:edit`, `smoke:structure`, `smoke:compare`, `smoke:stdio` (spawns the real MCP server and speaks JSON-RPC), `smoke:real` + `smoke:real-full` (validate against a genuine PowerPoint deck — untouched parts must be byte-identical after edit+save; media must survive structure ops byte-identical).
+
+**Designated real-world test deck:** `C:\Users\Deano\Downloads\test-for-mcp.pptx` (11 slides, 114 parts, textbox-only design, smart quotes, mixed-language shape names, 21 images). Both real-world suites copy it into `fixtures/generated/` — the original is never modified — and SKIP gracefully when it is absent (other machines/CI).
 
 ## MCP registration
 

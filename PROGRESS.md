@@ -35,6 +35,11 @@ Repo: https://github.com/DeanT-04/safe-pptx
 | smoke:compare | 11 | modified/added/cleared paragraphs, slide add detection, report, annotated copy |
 | smoke:stdio | 6 | real server process: initialize, tools/list (23), tools/call, isError surfacing |
 | smoke:real | 12 | genuine 11-slide/114-part PowerPoint deck: byte-identity + single clean redline change |
+| smoke:real-full | 24 | designated real deck (Downloads\test-for-mcp.pptx), full tool sweep: smart-quote edits, notes/comments creation, slide ops, media byte-identity, OPC integrity |
+
+## Designated real-world test deck
+
+`C:\Users\Deano\Downloads\test-for-mcp.pptx` — used by `smoke:real` and `smoke:real-full` (always on a copy; original never modified; SKIP when absent). It surfaced one real-world fix: `get_outline` now infers titles for textbox-only slides (`title_inferred: true`), since many decks (including this one) use no title placeholders at all.
 
 ## Packages
 

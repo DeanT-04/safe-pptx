@@ -173,11 +173,16 @@ const getOutlineTool: ToolDef = {
           (w.shape.phType === 'title' || w.shape.phType === 'ctrTitle'),
       );
       const notes = walkNotesParagraphs(pkg, slide.partPath);
+      // Many real decks build slides from plain textboxes with no title
+      // placeholder — fall back to the first text paragraph, marked inferred.
+      const fallback = walked.find((w) => !w.shapeKey.includes('/') && w.para.text.trim().length > 0);
+      const inferred = !titlePara && Boolean(fallback);
       return {
         slide: slide.index + 1,
         part: slide.partPath,
         sldId: slide.sldId,
-        title: titlePara ? titlePara.para.text : null,
+        title: titlePara ? titlePara.para.text : fallback ? fallback.para.text : null,
+        title_inferred: inferred,
         layout: pkg.layoutForSlide(slide.partPath),
         text_paragraphs: walked.length,
         has_notes: notes.part !== '',
