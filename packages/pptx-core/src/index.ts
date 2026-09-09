@@ -10,3 +10,6 @@ export * from './text/model.js';
 export * from './text/anchors.js';
 export * from './read/walk.js';
 export * from './read/comments.js';
+export * from './edit/text_engine.js';
+export * from './edit/paragraph_ops.js';
+export * from './save/minimal_save.js';

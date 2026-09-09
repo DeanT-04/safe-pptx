@@ -52,7 +52,7 @@ export function walkSlideParagraphs(pkg: PptxPackage, slidePartPath: string): Wa
   }
   const anchors = assignAnchors(
     slidePartPath,
-    allParas.map((p) => p.shapeKey),
+    allParas.map((p) => [p.shapeKey]),
     allParas.map((p) => p.para),
   );
   const slideRef = pkg.slideByPartPath(slidePartPath);
@@ -86,6 +86,6 @@ export function walkNotesParagraphs(pkg: PptxPackage, slidePartPath: string): {
   const bodyShape = shapes.find((s) => s.phType === 'body') ?? null;
   if (!bodyShape?.txBody) return { part: notesPart, items: [] };
   const paras = buildTextBody(bodyShape.txBody);
-  const anchors = assignAnchors(notesPart, [`${bodyShape.kind}#${bodyShape.id}`], paras);
+  const anchors = assignAnchors(notesPart, [[`${bodyShape.kind}#${bodyShape.id}`]], paras);
   return { part: notesPart, items: paras.map((para, i) => ({ anchor: anchors[i], para })) };
 }

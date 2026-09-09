@@ -24,19 +24,21 @@ function computeAnchor(parts: (string | number | null | undefined)[], salt: numb
 }
 
 /**
- * Assign anchor ids to a slide's flattened paragraph list. `contextParts`
- * should uniquely identify the paragraph's location shape (slide part +
- * shape key). Duplicates of the same base anchor get salted deterministically.
+ * Assign anchor ids to a slide's flattened paragraph list. `contexts[i]`
+ * identifies paragraph i's location (e.g. its shape key) — an anchor depends
+ * only on the slide part, its own context, its text, and its immediate
+ * neighbors' texts, so unrelated edits elsewhere on the slide don't move it.
+ * Duplicates of the same base anchor get salted deterministically.
  */
 export function assignAnchors(
   slidePartPath: string,
-  contextParts: (string | number)[],
+  contexts: (string | number)[][],
   paras: ParagraphInfo[],
 ): string[] {
   const texts = paras.map((p) => normalizeForHash(p.text));
   const seen = new Map<string, number>();
   return texts.map((text, i) => {
-    const context = [slidePartPath, ...contextParts];
+    const context = [slidePartPath, ...(contexts[i] ?? [])];
     const neighbors = [texts[i - 1] ?? null, texts[i + 1] ?? null];
     const base = computeAnchor([...context, text, ...neighbors], 0);
     const count = seen.get(base) ?? 0;

@@ -29,6 +29,8 @@ export class PptxZip {
   private readonly parts = new Map<string, PptxPart>();
   private readonly docs = new Map<string, Document>();
   private readonly dirty = new Set<string>();
+  /** Zip entry order as loaded — preserved on save for maximal fidelity. */
+  readonly sourceOrder: string[] = [];
 
   private constructor() {}
 
@@ -57,6 +59,7 @@ export class PptxZip {
     for (const path of Object.keys(zip.files)) {
       const file = zip.files[path];
       if (!file || file.dir) continue;
+      out.sourceOrder.push(path);
       const normalized = normalizeEntryName(path);
       pending.push(
         file.async('nodebuffer').then((bytes) => {
@@ -145,5 +148,29 @@ export class PptxZip {
     this.parts.delete(path);
     this.docs.delete(path);
     this.dirty.delete(path);
+  }
+
+  /** Parts added after load (not present in the source archive). */
+  addedParts(): string[] {
+    const source = new Set(this.sourceOrder);
+    return [...this.parts.keys()].filter((p) => !source.has(p)).sort();
+  }
+
+  /** Source parts deleted during the session. */
+  removedParts(): string[] {
+    return this.sourceOrder.filter((p) => !this.parts.has(p));
+  }
+
+  /** Call after a successful save: dirty parts become the new baseline bytes. */
+  markSaved(newBytes: Map<string, Buffer>): void {
+    for (const path of this.dirty) {
+      const part = this.parts.get(path);
+      const bytes = newBytes.get(path);
+      if (part && bytes) {
+        part.bytes = bytes;
+        if (part.isXml) part.text = bytes.toString('utf8');
+      }
+    }
+    this.dirty.clear();
   }
 }
