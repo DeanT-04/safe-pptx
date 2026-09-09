@@ -15,4 +15,5 @@ export * from './edit/paragraph_ops.js';
 export * from './edit/notes_ops.js';
 export * from './edit/comment_ops.js';
 export * from './edit/slide_ops.js';
+export * from './compare/compare.js';
 export * from './save/minimal_save.js';

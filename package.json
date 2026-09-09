@@ -18,6 +18,7 @@
     "smoke:read": "npm run build && node scripts/smoke-read.mjs",
     "smoke:edit": "npm run build && node scripts/smoke-edit.mjs",
     "smoke:structure": "npm run build && node scripts/smoke-structure.mjs",
+    "smoke:compare": "npm run build && node scripts/smoke-compare.mjs",
     "test": "npm run test -w @safe-pptx/pptx-core && npm run test -w @safe-pptx/pptx-mcp"
   },
   "devDependencies": {
