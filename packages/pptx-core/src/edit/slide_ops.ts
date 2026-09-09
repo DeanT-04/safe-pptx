@@ -70,6 +70,36 @@ function refreshSlideList(pkg: PptxPackage): void {
   pkg.refreshStructure();
 }
 
+/**
+ * Scrub a deleted slide's id out of p14:sectionLst (presentation extLst).
+ * Sections reference slide ids; a dangling entry triggers PowerPoint's
+ * repair prompt. Sections left with zero slides are removed, matching
+ * PowerPoint's own behavior.
+ */
+export function scrubSectionsForSlide(presDoc: Document, sldId: number): number {
+  let removed = 0;
+  const extLst = firstChildByName(presDoc.documentElement, 'p', 'extLst');
+  if (!extLst) return 0;
+  for (const ext of childrenByName(extLst, 'p', 'ext')) {
+    const sectionLst = firstChildByName(ext, 'p14', 'sectionLst');
+    if (!sectionLst) continue;
+    for (const section of [...childrenByName(sectionLst, 'p14', 'section')]) {
+      const idLst = firstChildByName(section, 'p14', 'sldIdLst');
+      if (!idLst) continue;
+      for (const entry of [...childrenByName(idLst, 'p14', 'sldId')]) {
+        if (Number(entry.getAttribute('id')) === sldId) {
+          idLst.removeChild(entry);
+          removed += 1;
+        }
+      }
+      if (childrenByName(idLst, 'p14', 'sldId').length === 0) {
+        sectionLst.removeChild(section);
+      }
+    }
+  }
+  return removed;
+}
+
 /** Build a new, empty slide document from a layout's placeholder prototypes. */
 function buildSlideFromLayout(pkg: PptxPackage, layoutPartPath: string): Document {
   const layoutDoc = pkg.zip.doc(layoutPartPath);
@@ -232,11 +262,13 @@ export function deleteSlide(pkg: PptxPackage, slideNumber: number): { removedPar
   if (!slide) throw new EditError(`slide ${slideNumber} does not exist`);
   const removedParts: string[] = [];
 
-  // Remove sldId + presentation rel.
+  // Remove sldId + presentation rel (+ section membership).
   const presDoc = pkg.presentationDoc();
   const sldIdLst = childrenByName(presDoc.documentElement, 'p', 'sldIdLst')[0];
   const sldIdEl = childrenByName(sldIdLst, 'p', 'sldId')[slide.index];
+  const deletedSldId = Number(sldIdEl?.getAttribute('id'));
   if (sldIdEl) sldIdLst.removeChild(sldIdEl);
+  if (Number.isFinite(deletedSldId)) scrubSectionsForSlide(presDoc, deletedSldId);
   updatePresentationRels(pkg, null, 'remove', slide.relId);
   refreshSlideList(pkg);
 

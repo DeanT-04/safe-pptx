@@ -71,7 +71,9 @@ function parseTable(graphicFrame: Element): TableRef | null {
       el: tc,
       row: rowIdx,
       col: colIdx,
-      txBody: firstChildByName(tc, 'p', 'txBody'),
+      // Table cell text bodies live in the DrawingML namespace (a:txBody),
+      // unlike slide shape bodies which are p:txBody.
+      txBody: firstChildByName(tc, 'a', 'txBody'),
     }));
     rows.push(cells);
   });

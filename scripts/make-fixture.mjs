@@ -122,9 +122,9 @@ ${spTreeOpen()}
 <a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl>
 <a:tblPr firstRow="1" bandRow="1"/>
 <a:tblGrid><a:gridCol w="4572000"/><a:gridCol w="4572000"/></a:tblGrid>
-<a:tr h="457200"><a:tc><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US" b="1"/><a:t>Region</a:t></a:r></a:p></p:txBody><a:tcPr/></a:tc><a:tc><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US" b="1"/><a:t>Bookings</a:t></a:r></a:p></p:txBody><a:tcPr/></a:tc></a:tr>
-<a:tr h="457200"><a:tc><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>EMEA</a:t></a:r></a:p></p:txBody><a:tcPr/></a:tc><a:tc><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>4.2M</a:t></a:r></a:p></p:txBody><a:tcPr/></a:tc></a:tr>
-<a:tr h="457200"><a:tc><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>APAC</a:t></a:r></a:p></p:txBody><a:tcPr/></a:tc><a:tc><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>2.9M</a:t></a:r></a:p></p:txBody><a:tcPr/></a:tc></a:tr>
+<a:tr h="457200"><a:tc><a:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US" b="1"/><a:t>Region</a:t></a:r></a:p></a:txBody><a:tcPr/></a:tc><a:tc><a:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US" b="1"/><a:t>Bookings</a:t></a:r></a:p></a:txBody><a:tcPr/></a:tc></a:tr>
+<a:tr h="457200"><a:tc><a:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>EMEA</a:t></a:r></a:p></a:txBody><a:tcPr/></a:tc><a:tc><a:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>4.2M</a:t></a:r></a:p></a:txBody><a:tcPr/></a:tc></a:tr>
+<a:tr h="457200"><a:tc><a:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>APAC</a:t></a:r></a:p></a:txBody><a:tcPr/></a:tc><a:tc><a:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>2.9M</a:t></a:r></a:p></a:txBody><a:tcPr/></a:tc></a:tr>
 </a:tbl></a:graphicData></a:graphic>
 </p:graphicFrame>
 <p:sp>

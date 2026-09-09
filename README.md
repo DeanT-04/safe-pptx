@@ -43,9 +43,11 @@ npm run fixture      # regenerate the deterministic test fixture
 npm run verify       # build + unit tests + all 7 integration suites
 ```
 
-Integration suites: `smoke` (loader), `smoke:read`, `smoke:edit`, `smoke:structure`, `smoke:compare`, `smoke:stdio` (spawns the real MCP server and speaks JSON-RPC), `smoke:real` + `smoke:real-full` (validate against a genuine PowerPoint deck — untouched parts must be byte-identical after edit+save; media must survive structure ops byte-identical).
+Integration suites: `smoke` (loader), `smoke:read`, `smoke:edit`, `smoke:structure`, `smoke:compare`, `smoke:torture` (generates `fixtures/generated/torture.pptx` — a deck with every PowerPoint feature: charts, media, animations, sections, groups, RTL, fields, merged tables, SVG, legacy comments — and sweeps every tool over it with per-feature preservation asserts), `smoke:stdio` (spawns the real MCP server and speaks JSON-RPC), `smoke:real` + `smoke:real-full` (validate against a genuine PowerPoint deck — untouched parts must be byte-identical after edit+save; media must survive structure ops byte-identical).
 
 **Designated real-world test deck:** `C:\Users\Deano\Downloads\test-for-mcp.pptx` (11 slides, 114 parts, textbox-only design, smart quotes, mixed-language shape names, 21 images). Both real-world suites copy it into `fixtures/generated/` — the original is never modified — and SKIP gracefully when it is absent (other machines/CI).
+
+The torture deck is generated with the [official pptx skill](https://github.com/anthropics/skills) stack (`pptxgenjs`, installed globally) plus raw-OOXML post-processing (jszip + @xmldom/xmldom) for features generators can't reach: animations, transitions, sections, gradient/pattern fills, nested groups, SVG blips, stale autofit caches, and ffmpeg-built audio/video.
 
 ## MCP registration
 

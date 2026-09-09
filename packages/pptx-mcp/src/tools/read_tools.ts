@@ -221,6 +221,7 @@ function grepPackage(
   for (const slide of pkg.slides) {
     for (const item of walkSlideParagraphs(pkg, slide.partPath)) {
       if (hits.length >= maxResults) return hits;
+      regex.lastIndex = 0; // stateful /g regex: reset between paragraphs
       const match = regex.exec(item.para.text);
       if (!match) continue;
       hits.push({
@@ -236,6 +237,7 @@ function grepPackage(
     const notes = walkNotesParagraphs(pkg, slide.partPath);
     for (const { anchor, para } of notes.items) {
       if (hits.length >= maxResults) return hits;
+      regex.lastIndex = 0;
       const match = regex.exec(para.text);
       if (!match) continue;
       hits.push({
@@ -265,6 +267,7 @@ function grepPackageXml(
     const part: PptxPart | undefined = pkg.zip.getPart(partPath);
     if (!part?.isXml || part.text === undefined) continue;
     const xml = pkg.zip.hasPart(partPath) ? serializeXml(pkg.zip.doc(partPath)) : part.text;
+    regex.lastIndex = 0; // stateful /g regex: reset between parts
     let m: RegExpExecArray | null;
     while ((m = regex.exec(xml)) !== null) {
       hits.push({
@@ -384,14 +387,16 @@ const exportTool: ToolDef = {
     const md = format === 'markdown';
     for (const slide of pkg.slides) {
       const walked = walkSlideParagraphs(pkg, slide.partPath);
-      const title = walked.find(
+      const titlePara = walked.find(
         (w) => w.shape.phType === 'title' || w.shape.phType === 'ctrTitle',
       );
-      lines.push(md ? `## Slide ${slide.index + 1}${title ? ` — ${title.para.text}` : ''}` : `Slide ${slide.index + 1}${title ? `: ${title.para.text}` : ''}`);
+      const fallback = titlePara ?? walked.find((w) => !w.shapeKey.includes('/') && w.para.text.trim().length > 0);
+      const titleText = fallback ? fallback.para.text : null;
+      lines.push(md ? `## Slide ${slide.index + 1}${titleText ? ` — ${titleText}` : ''}` : `Slide ${slide.index + 1}${titleText ? `: ${titleText}` : ''}`);
       lines.push('');
       let lastKey: string | null = null;
       for (const item of walked) {
-        if (title && item.anchor === title.anchor) continue;
+        if (fallback && item.anchor === fallback.anchor) continue;
         if (item.shapeKey !== lastKey) {
           if (!md) lines.push(`[${item.shapeKey}]`);
           lastKey = item.shapeKey;

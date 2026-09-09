@@ -36,6 +36,18 @@ Repo: https://github.com/DeanT-04/safe-pptx
 | smoke:stdio | 6 | real server process: initialize, tools/list (23), tools/call, isError surfacing |
 | smoke:real | 12 | genuine 11-slide/114-part PowerPoint deck: byte-identity + single clean redline change |
 | smoke:real-full | 24 | designated real deck (Downloads\test-for-mcp.pptx), full tool sweep: smart-quote edits, notes/comments creation, slide ops, media byte-identity, OPC integrity |
+| smoke:torture | 44 | torture deck (13 slides / 7 charts / 10 media / sections / animations / groups / RTL / fields / merged tables / SVG / legacy comments): per-feature preservation + byte-identity + structure ops |
+
+## Hardening round (torture deck)
+
+The torture deck exposed and fixed four real defects:
+
+1. **grep** — stateful `/g` regex kept `lastIndex` across paragraphs/parts, silently skipping hits (found via RTL text search).
+2. **Table cells** — parsed as `p:txBody` but DrawingML table cells use **`a:txBody`**; pptxgenjs/PowerPoint tables were invisible to read/edit/walk.
+3. **`delete_slide` × sections** — deleting a slide left dangling ids in `p14:sectionLst` (PowerPoint repair prompt); now scrubbed, empty sections removed.
+4. **Fixture validity** — the original handcrafted fixture had the same `p:txBody`-in-table-cell mistake; corrected to spec.
+
+Also added: `get_outline`/`export` infer titles for textbox-only decks (`title_inferred`), since many real decks use no title placeholders.
 
 ## Designated real-world test deck
 

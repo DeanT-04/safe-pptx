@@ -22,7 +22,8 @@
     "smoke:stdio": "npm run build && node scripts/smoke-stdio.mjs",
     "smoke:real": "npm run build && node scripts/smoke-real.mjs",
     "smoke:real-full": "npm run build && node scripts/smoke-real-full.mjs",
-    "verify": "npm run build && npm test && node scripts/smoke.mjs && node scripts/smoke-read.mjs && node scripts/smoke-edit.mjs && node scripts/smoke-structure.mjs && node scripts/smoke-compare.mjs && node scripts/smoke-stdio.mjs && node scripts/smoke-real.mjs && node scripts/smoke-real-full.mjs",
+    "smoke:torture": "npm run build && node scripts/make-torture-deck.mjs && node scripts/smoke-torture.mjs",
+    "verify": "npm run build && npm test && npm run fixture && node scripts/smoke.mjs && node scripts/smoke-read.mjs && node scripts/smoke-edit.mjs && node scripts/smoke-structure.mjs && node scripts/smoke-compare.mjs && node scripts/smoke-torture.mjs && node scripts/smoke-stdio.mjs && node scripts/smoke-real.mjs && node scripts/smoke-real-full.mjs",
     "test": "npm run test -w @safe-pptx/pptx-core"
   },
   "devDependencies": {
