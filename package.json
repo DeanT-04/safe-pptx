@@ -19,7 +19,10 @@
     "smoke:edit": "npm run build && node scripts/smoke-edit.mjs",
     "smoke:structure": "npm run build && node scripts/smoke-structure.mjs",
     "smoke:compare": "npm run build && node scripts/smoke-compare.mjs",
-    "test": "npm run test -w @safe-pptx/pptx-core && npm run test -w @safe-pptx/pptx-mcp"
+    "smoke:stdio": "npm run build && node scripts/smoke-stdio.mjs",
+    "smoke:real": "npm run build && node scripts/smoke-real.mjs",
+    "verify": "npm run build && npm test && node scripts/smoke.mjs && node scripts/smoke-read.mjs && node scripts/smoke-edit.mjs && node scripts/smoke-structure.mjs && node scripts/smoke-compare.mjs && node scripts/smoke-stdio.mjs && node scripts/smoke-real.mjs",
+    "test": "npm run test -w @safe-pptx/pptx-core"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
